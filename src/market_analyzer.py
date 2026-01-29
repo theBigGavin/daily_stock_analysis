@@ -187,8 +187,8 @@ class MarketAnalyzer:
 
             # # 如果 akshare 获取失败或为空，尝试使用 yfinance 兜底
             # if not indices:
-                logger.warning("[大盘] 国内源获取失败，尝试使用 Yfinance 兜底...")
-                indices = self._get_indices_from_yfinance()
+            logger.warning("[大盘] 国内源获取失败，尝试使用 Yfinance 兜底...")
+            indices = self._get_indices_from_yfinance()
 
             logger.info(f"[大盘] 获取到 {len(indices)} 个指数行情")
 
