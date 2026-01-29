@@ -155,38 +155,38 @@ class MarketAnalyzer:
             logger.info("[大盘] 获取主要指数实时行情...")
             
             # 使用 akshare 获取指数行情（新浪财经接口，包含深市指数）
-            df = self._call_akshare_with_retry(ak.stock_zh_index_spot_sina, "指数行情", attempts=2)
+            # df = self._call_akshare_with_retry(ak.stock_zh_index_spot_sina, "指数行情", attempts=2)
             
-            if df is not None and not df.empty:
-                for code, name in self.MAIN_INDICES.items():
-                    # 查找对应指数
-                    row = df[df['代码'] == code]
-                    if row.empty:
-                        # 尝试带前缀查找
-                        row = df[df['代码'].str.contains(code)]
+            # if df is not None and not df.empty:
+            #     for code, name in self.MAIN_INDICES.items():
+            #         # 查找对应指数
+            #         row = df[df['代码'] == code]
+            #         if row.empty:
+            #             # 尝试带前缀查找
+            #             row = df[df['代码'].str.contains(code)]
                     
-                    if not row.empty:
-                        row = row.iloc[0]
-                        index = MarketIndex(
-                            code=code,
-                            name=name,
-                            current=float(row.get('最新价', 0) or 0),
-                            change=float(row.get('涨跌额', 0) or 0),
-                            change_pct=float(row.get('涨跌幅', 0) or 0),
-                            open=float(row.get('今开', 0) or 0),
-                            high=float(row.get('最高', 0) or 0),
-                            low=float(row.get('最低', 0) or 0),
-                            prev_close=float(row.get('昨收', 0) or 0),
-                            volume=float(row.get('成交量', 0) or 0),
-                            amount=float(row.get('成交额', 0) or 0),
-                        )
-                        # 计算振幅
-                        if index.prev_close > 0:
-                            index.amplitude = (index.high - index.low) / index.prev_close * 100
-                        indices.append(index)
+            #         if not row.empty:
+            #             row = row.iloc[0]
+            #             index = MarketIndex(
+            #                 code=code,
+            #                 name=name,
+            #                 current=float(row.get('最新价', 0) or 0),
+            #                 change=float(row.get('涨跌额', 0) or 0),
+            #                 change_pct=float(row.get('涨跌幅', 0) or 0),
+            #                 open=float(row.get('今开', 0) or 0),
+            #                 high=float(row.get('最高', 0) or 0),
+            #                 low=float(row.get('最低', 0) or 0),
+            #                 prev_close=float(row.get('昨收', 0) or 0),
+            #                 volume=float(row.get('成交量', 0) or 0),
+            #                 amount=float(row.get('成交额', 0) or 0),
+            #             )
+            #             # 计算振幅
+            #             if index.prev_close > 0:
+            #                 index.amplitude = (index.high - index.low) / index.prev_close * 100
+            #             indices.append(index)
 
-            # 如果 akshare 获取失败或为空，尝试使用 yfinance 兜底
-            if not indices:
+            # # 如果 akshare 获取失败或为空，尝试使用 yfinance 兜底
+            # if not indices:
                 logger.warning("[大盘] 国内源获取失败，尝试使用 Yfinance 兜底...")
                 indices = self._get_indices_from_yfinance()
 
